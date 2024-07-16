@@ -1,0 +1,53 @@
+/*
+Developed by ABAQUS Inc.
+*/
+
+// This function creates a new navigator object and stores browser name, version, and platform in it.
+// This function is called at the bottom of this file
+function browserDetection()
+{
+    standardNavObj = window.navigator;
+    
+    //Note that for those browsers where the navigator object already exists, this will add member to it.
+    
+    navigator.family = '';
+    navigator.version = -1;
+    navigator.OS = '';
+    
+    
+    if (standardNavObj.appName == "Microsoft Internet Explorer")
+    {
+        navigator.family = "ie4";
+        versionAux = standardNavObj.appVersion.substr(standardNavObj.appVersion.indexOf('MSIE')+5, 3);
+    }
+    else if (standardNavObj.appName == "Netscape")
+    {
+        navigator.family = "gecko";
+        versionAux = standardNavObj.appVersion.substr(0, standardNavObj.appVersion.indexOf(' '));
+    }
+    //This strategy of reverting to IE for unknown browser offers the best chance of making the Treview work with future onknown browsers.
+    //Note that Opera 7.0+ reports itself as being IE.
+    else  
+    {
+        navigator.family = "ie4";
+        versionAux = 4;
+    }
+
+    navigator.version = parseFloat(versionAux);
+    
+    if (standardNavObj.platform.substr(0,3) == 'Win')
+    {
+        navigator.OS = 'win';
+    }
+    else if (standardNavObj.platform.substr(0,3) == 'Mac')
+    {
+        navigator.OS = 'mac';
+    }
+    else
+    {
+        navigator.OS = 'nix';
+    }
+}
+
+browserDetection();
+

@@ -1,0 +1,41 @@
+      function validateQuery() {
+	if(window.parent.sType == "clear") {
+	   window.parent.sType = "";
+	   return false;
+}
+	else {
+      if (document.search_form) {
+      var astAlert = 0;
+      var querystr = document.search_form.query.value;
+      var quote = /"([^"]*)"/g;
+      var qCleanedStr = querystr.replace(quote,"$1");
+      qCleanedStr = qCleanedStr.replace(/\s+/g,'');
+      if (qCleanedStr.length <= 0) {
+          alert("No valid query string was entered for the search");
+          return false;
+      }
+      else {
+      var i;
+      var nQuery = "";
+      var qArray = querystr.split(/\s+/);
+      for(i=0; i < qArray.length; i++){
+      if(qArray[i].match(/^(\"*)\*/) != null) {
+      astAlert = 1;
+          qArray[i] = qArray[i].replace(/^(\"*)\*/,"$1");
+}
+      if(i == 0) 
+          nQuery = nQuery+qArray[i];
+      else 
+          nQuery = nQuery+" "+qArray[i];
+      }
+      if(astAlert) 
+          alert("Query terms may not begin with an asterisk (wildcard). Invalid asterisks have been removed from your query.");
+      if (document.search_form) {
+          document.search_form.query.value = nQuery;
+	  window.parent.sType=''; // Reset value for stop search function
+      }
+      return true;
+      }
+}
+}
+  }

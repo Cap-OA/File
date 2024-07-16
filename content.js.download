@@ -1,0 +1,261 @@
+var recordSelect = true;
+var bMSIE, bMSIE3, bMSIE4, bMSIE5, bMSIE4_beta, bMSIE4_01;
+var bNetscape, bNetscape_2, bNetscape_3, bNetscape_4;
+
+// Before finishing the load, let us see if we need to build
+// the frame.
+
+if (window.parent == self)
+{
+	// Need to build the frame
+	var hrefTarget = document.location.pathname;
+	if (hrefTarget.match("/texis/")) {  //Href with hits was opened in new window
+		getVer();
+		hrefTarget = hrefTarget.replace("/texis/search/hilight2.html/+/", "/"+version+"/books/");
+		splitStr=hrefTarget.split("?");
+		if (bMSIE3) {
+			open(splitStr[0], "_top");
+		}
+		else {
+			document.location.replace(splitStr[0]);
+		}
+	}
+	else {
+		if (hrefTarget.lastIndexOf("/") != 0) {
+			hrefTarget = hrefTarget.substring(hrefTarget.lastIndexOf("/")+1);
+		}
+		browser();
+		if (bMSIE3) {
+			open("default.htm?startat="+hrefTarget+document.location.search+document.location.hash, "_top");
+		}
+		else {
+			document.location.replace("default.htm?startat="+hrefTarget+document.location.search+document.location.hash);
+		}
+	}
+}
+
+// Must not be rebuilding.
+
+function browser()
+{
+	// borrowed from Microsoft
+    var ua = navigator.userAgent;
+    var an = navigator.appName;
+
+    // Is it IE?
+    bNetscape = (ua.indexOf("MSIE")>=1);
+    if (bNetscape)
+    {
+        // IE3
+        bNetscape_3 = (ua.indexOf("MSIE 3.0")>=1);
+
+        // IE4
+        var iMSIE4 = ua.indexOf("MSIE 4.0");
+        bNetscape_4 = (iMSIE4>=1);
+        if (bNetscape_4)
+        {
+            var sMinorVer = ua.charAt(iMSIE4+8);
+            // Some folks are still running an IE4 beta!
+            // (the Mac IE team used a 'p' to mark their beta)
+            bMSIE4_beta = bMSIE4 && ((sMinorVer == "b") || (sMinorVer == "p"));
+
+            // IE4.01
+            bMSIE4_01 = bMSIE4 && (sMinorVer == "1");
+        }
+        // IE5
+        bNetscape_4 = (ua.indexOf("MSIE 5.0")>=1);
+    }
+    else if (an == "Netscape")
+    {
+        bNetscape = true;
+        appVer = parseInt(navigator.appVersion);
+        if (appVer >= 4)
+            bNetscape_4 = true;
+        else if (appVer >= 3)
+            bNetscape_3 = true;
+        else
+            bNetscape_2 = true;
+    }
+}
+
+function newPage(pageHREF) {
+
+    if(window.parent.Node.xhref){
+        if(window.parent.Node.xhref[pageHREF] != null){
+        window.parent.currentNode = window.parent.Node.xhref[pageHREF];
+        }
+        curhref = document.location.href;
+        curhreflen = curhref.indexOf('#');
+        if (curhreflen != -1) {
+            currAnchor = curhref.slice(curhreflen+1);
+            if(currAnchor.substr(0,3) == "hit") { //Set both styles to avoid overset text in IE
+                document.getElementsByName(currAnchor)[0].className="mmhitC";
+		if (window.parent.TEXT.document.getElementsByName('Layer1')[0])
+		    window.parent.TEXT.document.getElementsByName('Layer1')[0].className = "TEXT";
+	    }
+        }
+    }
+
+    else if(window.parent.NAV.foldersTree) { //Needed to avoid JavaScript error in non-searchable collection
+        if(window.parent.NAV.foldersTree.xhref) {
+            if(window.parent.NAV.foldersTree.xhref[pageHREF]) {
+	        if(window.parent.NAV.foldersTree.xhref[pageHREF] != null){
+	            window.parent.currentNode = window.parent.NAV.foldersTree.xhref[pageHREF];
+	        }
+	        curhref = document.location.href;
+	        curhreflen = curhref.indexOf('#');
+	        if (curhreflen != -1) {
+	            currAnchor = curhref.slice(curhreflen+1);
+	            if((currAnchor.substr(0,3) == "hit")&&(window.parent.NAV.foldersTree.xhref[pageHREF].mycount >= 1))  { //Set both styles to avoid overset text in IE
+	                document.getElementsByName(currAnchor)[0].className="mmhitC";
+			if (window.parent.TEXT.document.getElementsByName('Layer1')[0])
+			    window.parent.TEXT.document.getElementsByName('Layer1')[0].className = "TEXT";
+		    }
+	            else if (curhref.lastIndexOf("/") != 0) {
+	                if (window.parent.NAV.foldersTree.xhref[pageHREF].mycount <= 0) {
+	                    var hrefTarget = curhref.substring(curhref.lastIndexOf("/")+1);
+		            if (window.parent.NAV.foldersTree.xhref[hrefTarget] != null) 
+		                window.parent.currentNode = window.parent.NAV.foldersTree.xhref[hrefTarget];	
+	                }
+                    }
+                }
+                else if (window.parent.NAV.foldersTree.xhref[pageHREF].mycount >= 1) { //Set both styles to avoid overset text in IE
+                    // remove automatic highlighting of first hit
+	            // document.getElementsByName('hit1')[0].className="mmhitC";
+		    // if (window.parent.TEXT.document.getElementsByName('Layer1')[0])
+		    //    window.parent.TEXT.document.getElementsByName('Layer1')[0].className = "TEXT";
+                }
+                else {
+	            if (curhref.lastIndexOf("/") != 0) {
+	                var hrefTarget = curhref.substring(curhref.lastIndexOf("/")+1);	
+			var sHref = hrefTarget.split("?");
+			hrefTarget=sHref[0];
+	                window.parent.currentNode = window.parent.NAV.foldersTree.xhref[hrefTarget];
+	            }
+                }
+                if(window.parent.currentNode.id >= 0) {
+                    var hObj = window.parent.NAV.findObj;
+	            var hiliteNode = window.parent.NAV.highlightObjLink;
+       	            var hNode = hObj(window.parent.currentNode.id);
+	            hiliteNode(hNode);
+                }
+            }
+        }
+    }
+    xBookLink();
+    return;
+}
+
+function newSelection()
+{
+	// Don't allow double clicks if this is not loaded via HTTP
+	if (document.location.protocol != "http:" && document.location.protocol != "https:" )
+	{
+		return;
+	}
+
+	if (recordSelect == false)
+		return;
+
+	var navFrame = window.parent.frames["NAV"];
+	if (navFrame == null)
+		return;
+	if (navFrame.document.readyState == null)
+		return;
+	if (navFrame.document.readyState != "complete")
+		return;
+	for (var targetElement = window.event.srcElement;
+			targetElement != null;
+			targetElement = targetElement.parentElement)
+	{
+		if (targetElement.getAttribute("srctreeloc") != null)
+		{
+			navFrame.textSelection(targetElement);
+			window.event.cancelBubble = true;
+			return;
+		}
+	}
+	window.event.cancelBubble = true;
+}
+
+function gettingFocus()
+{
+	if (window.event.srcElement == window.document.body)
+		return;
+	recordSelect = true;
+}
+
+function losingFocus()
+{
+	if (window.event.srcElement == window.document.body)
+		return;
+	recordSelect = false;
+}
+
+function popUpWin(fighyphtitle,figtitle,texttitle,imageval){
+  var agt=navigator.userAgent.toLowerCase();
+
+    // *** BROWSER VERSION ***
+    // Note: On IE5, these return 4, so use is_ie5up to detect IE5.
+    var is_major = parseInt(navigator.appVersion);
+    var is_minor = parseFloat(navigator.appVersion);
+
+    // Note: Opera and WebTV spoof Navigator.  We do strict client detection.
+    // If you want to allow spoofing, take out the tests for opera and webtv.
+    var is_nav  = ((agt.indexOf('mozilla')!=-1) && (agt.indexOf('spoofer')==-1)
+                && (agt.indexOf('compatible') == -1) && (agt.indexOf('opera')==-1)
+                && (agt.indexOf('webtv')==-1) && (agt.indexOf('hotjava')==-1));
+    var is_nav2 = (is_nav && (is_major == 2));
+    var is_nav3 = (is_nav && (is_major == 3));
+    var is_nav4 = (is_nav && (is_major == 4));
+    var is_nav4up = (is_nav && (is_major >= 4));
+    var is_nav4down = (is_nav && (is_major <= 4));
+    var is_navonly      = (is_nav && ((agt.indexOf(";nav") != -1) ||
+                          (agt.indexOf("; nav") != -1)) );
+    var is_nav6 = (is_nav && (is_major == 5));
+    var is_nav6up = (is_nav && (is_major >= 5));
+    var is_gecko = (agt.indexOf('gecko') != -1);
+
+
+    var is_ie     = ((agt.indexOf("msie") != -1) && (agt.indexOf("opera") == -1));
+    var is_ie3    = (is_ie && (is_major < 4));
+    var is_ie4    = (is_ie && (is_major == 4) && (agt.indexOf("msie 4")!=-1) );
+    var is_ie4up  = (is_ie && (is_major >= 4));
+    var is_ie5    = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.0")!=-1) );
+    var is_ie5_5  = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.5") !=-1));
+    var is_ie5up  = (is_ie && !is_ie3 && !is_ie4);
+    var is_ie5_5up =(is_ie && !is_ie3 && !is_ie4 && !is_ie5);
+    var is_ie6    = (is_ie && (is_major == 4) && (agt.indexOf("msie 6.")!=-1) );
+    var is_ie6up  = (is_ie && !is_ie3 && !is_ie4 && !is_ie5 && !is_ie5_5);
+
+if (is_gecko) 
+{
+   // JavaScript here for user agents implementing nav6 layout engine
+var selectWindow=window.open("", "select", "width=400,height=500,resizable=yes,scrollbars=yes");selectWindow.document.write("<html><head><title>"+fighyphtitle+texttitle+"</title></head><body bgcolor=\"#FFFFEE\" onBlur=\"self.focus();\" onLoad=\"self.focus();\"><p><b><font color=\"#0000FF\" face=\"ariel, helvetica, sans-serif\">"+figtitle+"</font></b><font face=\"ariel, helvetica, sans-serif\">"+texttitle+"</font><br/><br/>\(Close this window to return to the main frameset.\)</p><p><img src=\""+imageval+"\"/></p></body></html>");selectWindow.document.close();
+}
+else if (is_nav4up)
+{
+   // JavaScript here for Navigator 4 
+var figwin=window.open('../blank/popup.html', 'figwin', 'width=500,height=600,resizable=yes,scrollbars=no');figwin.document.write('<html><head><title>'+figtitle+texttitle+'</title></head><body bgcolor="#FFFFEE" onblur="self.focus(); onLoad=\"self.focus();"><p><b><font color="#0000FF" face="ariel, helvetica, sans-serif">'+figtitle+'</font></b><font face="ariel, helvetica, sans-serif">'+texttitle+'</font></p><p><img src="'+imageval+'"/></p></body></html>');
+}
+else if (is_ie5up)
+{
+   // JavaScript here for IE 4 and later
+var selectWindow=window.open("", "select", "width=400,height=500,resizable=yes,scrollbars=yes");selectWindow.document.write("<html><head><title>"+fighyphtitle+texttitle+"</title></head><body bgcolor=\"#FFFFEE\" onBlur=\"self.focus();\" onLoad=\"self.focus();\"><p><b><font color=\"#0000FF\" face=\"ariel, helvetica, sans-serif\">"+figtitle+"</font></b><font face=\"ariel, helvetica, sans-serif\">"+texttitle+"</font><br/><br/>\(Close this window to return to the main frameset.\)</p><p><img src=\""+imageval+"\"/></p></body></html>");selectWindow.document.close();
+}
+else if (is_nav3 || is_opera)
+{
+   // JavaScript here for Nav3 and Opera
+var figwin=window.open('../blank/popup.html', 'figwin', 'width=500,height=600,resizable=yes,scrollbars=no');figwin.document.write('<html><head><title>'+figtitle+texttitle+'</title></head><body bgcolor="#FFFFEE" onblur="self.focus(); onLoad=\"self.focus();"><p><b><font color="#0000FF" face="ariel, helvetica, sans-serif">'+figtitle+'</font></b><font face="ariel, helvetica, sans-serif">'+texttitle+'</font></p><p><img src="'+imageval+'"/></p></body></html>');
+} 
+else 
+{
+   // JavaScript here for Nav2 and IE 3 
+var figwin=window.open('../blank/popup.html', 'figwin', 'width=500,height=600,resizable=yes,scrollbars=no');figwin.document.write('<html><head><title>'+figtitle+texttitle+'</title></head><body bgcolor="#FFFFEE" onblur="self.focus(); onLoad=\"self.focus();"><p><b><font color="#0000FF" face="ariel, helvetica, sans-serif">'+figtitle+'</font></b><font face="ariel, helvetica, sans-serif">'+texttitle+'</font></p><p><img src="'+imageval+'"/></p></body></html>');
+	}
+}
+
+
+function tablepopUpWin(tablehyphtitle,tabletitle,texttitle,tableval){var selectWindow=window.open("", "select", "width=400,height=500,resizable=yes,scrollbars=yes");selectWindow.document.write("<html><head><title>"+tablehyphtitle+texttitle+"</title></head><body bgcolor=\"#FFFFEE\" onBlur=\"self.focus();\" onLoad=\"self.focus();\"><p><b><font color=\"#0000FF\" face=\"ariel, helvetica, sans-serif\">"+tabletitle+"</font></b><font face=\"ariel, helvetica, sans-serif\">"+texttitle+"</font><br/><br/>\(Close this window to return to the main frameset.\)</p><table>"+tableval+"</table></body></html>");selectWindow.document.close();}
+
+

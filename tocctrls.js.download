@@ -1,0 +1,117 @@
+//Functions specific to the Table of Contents [NAV] frame
+
+//Frame width controls
+
+function changeView(view) {
+	if(document.layers) { //Netscape Navigator
+	    alert("This function is not supported by the browser.");
+	    return;
+	}
+
+	var tocWidth=0;
+	var tocWidthFinal;
+	var bWidth=0;
+	var wWidth;
+	var nWidth;
+
+    	setStatus('');
+
+	// Determine current dimensions of TOC and browser window
+	if(self.innerWidth) {
+	    tocWidth = self.innerWidth;
+	    bWidth = self.parent.innerWidth;
+	}
+	else if (document.documentElement && document.documentElement.clientWidth)
+	{
+	    tocWidth = document.documentElement.clientWidth;
+	    bWidth = window.paren.document.documentElement.clientWidth;
+	}
+
+	else if (document.body) {
+	    tocWidth = document.body.clientWidth;
+	    bWidth = window.parent.document.body.clientWidth;
+	}
+
+	if(tocWidth < (bWidth-200)) 
+	    wWidth=(tocWidth+100);
+	else {
+	    wWidth=(bWidth-100);
+	}
+
+	if(tocWidth > 200)
+	    nWidth=(tocWidth-100);
+	else {
+	    nWidth=90;
+	}
+
+	if(view == "wide") {
+		top.document.getElementById('CONTENT').cols=wWidth+',*';
+		    if(tocWidth >= (bWidth-150))
+	    		alert("This is the maximum width for the Table of Contents");
+	}
+	else if(view == "narrow") {
+		top.document.getElementById('CONTENT').cols=nWidth+', *';
+		    if(tocWidth <= 200) 
+	    		alert("This is the minimum width for the Table of Contents");
+			return;
+	}
+	// Determine success of function (bug in Netscape 6 prevents successful completion)
+	if(self.innerWidth) {
+	    tocWidthFinal = self.innerWidth;
+	}
+	else if (document.documentElement && document.documentElement.clientWidth)
+	{
+	    tocWidthFinal = document.documentElement.clientWidth;
+	}
+	else if (document.body) {
+	    tocWidthFinal = document.body.clientWidth;
+	}
+	var wDiff = parseInt(top.document.getElementById('CONTENT').cols) - tocWidthFinal;
+    	if(( wDiff != 2 )&& (wDiff != 0)) {
+	    alert("This version of the browser does not support this function.");
+	}
+}
+
+//Expansion and collapse of TOC nodes
+
+function collapseTOC(folderObj) {
+  var clickNode = window.parent.NAV.clickOnNodeObj;
+
+  if(folderObj.isOpen) {
+    setStatus('Collapsing Table of Contents');
+    clickNode(folderObj); //Hide all folders for folderObj
+    clickNode(folderObj); //Restore first level under folderObj
+    setStatus('');
+  }
+}
+
+function waitMsg(msg) {  //Message window is implemented only for IE. Netscape and Mozilla execute JavaScript before completing window load.
+  bVer();
+
+  if (msg == "exit"){
+      msgWin.close();
+      setStatus('');
+  }
+  else {
+      msgWin=window.open('waitmsg.htm','Message','left=200,top=100,width=200,height=10');     
+      msgWin.focus();
+  }
+  return;
+}
+
+function expandTOC(folderObj,xlev) {
+  var interval=1000;
+  var msgWin;
+  waitMsg("Please wait while the Table of Contents is expanded");
+  intervalID = window.setInterval('expandTOCBaseNode(window.parent.NAV.foldersTree,'+xlev+')',interval);
+}
+
+function expandTOCBaseNode(folderObj,xlev) {
+  if (winDone) {
+    setStatus('Expanding Table of Contents');
+    var expandNode = window.parent.NAV.expandNodeObj;
+    clearInterval(intervalID);
+    expandNode(folderObj,xlev);
+    waitMsg('exit');
+  }
+}

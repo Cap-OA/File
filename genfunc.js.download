@@ -1,0 +1,378 @@
+//General utility functions used by more than one frame
+
+var catiaLinkInterval;
+var launchFunc;
+var jscriptLoaded=1;
+
+function getQueryParameters() {
+    var params = new Object();
+    var query = location.search.substring(1);
+    var pairs = query.split("&");
+    for (var i=0; i < pairs.length; i++) {
+        var pos = pairs[i].indexOf('=');
+        if (pos == -1) continue;
+        var paramname = pairs[i].substring(0,pos);
+        var paramvalue = pairs[i].substring(pos+1);
+        params[paramname] = unescape(paramvalue);
+    }
+    return params;
+}
+
+function getBook() {
+    var path = document.location.pathname;
+    var dlimiter;
+    var book;
+
+    if (path.lastIndexOf("\\") != -1)
+        dlimiter = "\\";
+    else if (path.lastIndexOf("/") != -1)
+        dlimiter = "/";
+    else
+        return;
+
+    var dirs = path.split(dlimiter);
+    for (var i=0; i < dirs.length; i++) {
+        var pos = dirs[i].indexOf('books');
+        if (pos == -1) continue;
+        else {
+            book = dirs[i+1];
+            return book;
+        } 
+    }
+    return book;
+}
+
+function getVer() {
+    var version;
+    var params = getQueryParameters();
+
+    if (params.CDB) {
+        version = params.CDB;
+        return version;
+    }
+    else {
+        var path = document.location.pathname;
+        var dlimiter;
+
+        if (path.lastIndexOf("\\") != -1)
+            dlimiter = "\\";
+        else if (path.lastIndexOf("/") != -1)
+            dlimiter = "/";
+        else
+            return;
+
+        var dirs = path.split(dlimiter);
+        for (var i=0; i < dirs.length; i++) {
+            var pos = dirs[i].indexOf('books');
+            var colpos = dirs[i].indexOf('index');
+            if ((pos == -1) && (colpos == -1)) continue;
+            else {
+                version = dirs[i-1];
+                return version;
+            }
+        }
+        version = dirs[i-2];    
+        return version;
+    }
+}
+
+//Links to Abaqus documentation, excluding current book
+function xBookLink() {
+    if (!document.getElementsByTagName) return;
+    var book;
+    var anchors = document.getElementsByTagName("a");
+    for (var i=0; i<anchors.length; i++) {
+        var anchor = anchors[i];
+        if (anchor.getAttribute("href") && anchor.getAttribute("rel") == "xbook") {
+            if (anchor.href.match("books"))
+                book = anchor.href.split("books/")[1].substr(0,3);
+            else if (anchor.href.match("redirects"))
+                book = anchor.href.split("redirects/")[1].substr(0,3);
+            else
+                book = anchor.href.split("../")[1].substr(0,3);
+            var verS = version.replace(".","");
+            anchor.target = verS+book+"win";
+        }
+    }
+}
+
+// Links to CATIA documentation
+function catiaLink(page) {
+    window.clearInterval(catiaLinkInterval);
+    if (baseCATURL == "nodocs") {
+        window.location="../redirects/Error.html";
+    }
+    else {
+        var bookBase = page.split("_C2")[0];
+        framesetURL= baseCATURL+"online/CATIAfr_C2/"+bookBase+"CATIAfrs.htm";
+        catWin=window.open(framesetURL, "nameWin");
+        // Don't set interval lower than 1000 (1 sec) because function will stall 
+        // on slower machines (MG)
+        catiaLinkInterval=window.setInterval('openPage("'+page+'")',1000);
+    }
+}
+
+function openPage(page) {
+    if (catWin.href == "undefined") {
+        return;
+    }
+    else {
+        if (!catWin.frames[4]) {
+            return;
+        }
+        else if (!catWin.frames[4].frames[1]) {
+            return;
+        }
+        else if (catWin.frames[4].frames[1].href == "undefined") {
+            return;
+        }
+        else {
+            //window.clearTimeout(launchFunc);
+            window.clearInterval(catiaLinkInterval);
+            //var subDir=page.split("gs")[0]+"_C2/";
+            var expandedPath=baseCATURL+"online/"+page;
+            catWin.frames[4].frames[1].location.replace(expandedPath);
+            catWin.frames[4].frames[1].focus();
+            return;
+        }
+    }
+}
+
+function bVer() {
+
+    var agt=navigator.userAgent.toLowerCase();
+
+    // *** BROWSER VERSION ***
+    // Note: On IE5, these return 4, so use is_ie5up to detect IE5.
+    var is_major = parseInt(navigator.appVersion);
+    var is_minor = parseFloat(navigator.appVersion);
+
+    // Note: Opera and WebTV spoof Navigator.  We do strict client detection.
+    // If you want to allow spoofing, take out the tests for opera and webtv.
+    var is_nav  = ((agt.indexOf('mozilla')!=-1) && (agt.indexOf('spoofer')==-1)
+                   && (agt.indexOf('compatible') == -1) && (agt.indexOf('opera')==-1)
+                   && (agt.indexOf('webtv')==-1) && (agt.indexOf('hotjava')==-1));
+    is_nav2 = (is_nav && (is_major == 2));
+    is_nav3 = (is_nav && (is_major == 3));
+    is_nav4 = (is_nav && (is_major == 4));
+    is_nav4up = (is_nav && (is_major >= 4));
+    is_nav4down = (is_nav && (is_major <= 4));
+    is_navonly      = (is_nav && ((agt.indexOf(";nav") != -1) ||
+                                  (agt.indexOf("; nav") != -1)) );
+    is_nav6 = (is_nav && (is_major == 5));
+    is_nav6up = (is_nav && (is_major >= 5));
+    is_gecko = (agt.indexOf('gecko') != -1);
+
+
+    is_ie     = ((agt.indexOf("msie") != -1) && (agt.indexOf("opera") == -1));
+    is_ie3    = (is_ie && (is_major < 4));
+    is_ie4    = (is_ie && (is_major == 4) && (agt.indexOf("msie 4")!=-1) );
+    is_ie4up  = (is_ie && (is_major >= 4));
+    is_ie5    = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.0")!=-1) );
+    is_ie5_5  = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.5") !=-1));
+    is_ie5up  = (is_ie && !is_ie3 && !is_ie4);
+    is_ie5_5up =(is_ie && !is_ie3 && !is_ie4 && !is_ie5);
+    is_ie6    = (is_ie && (is_major == 4) && (agt.indexOf("msie 6.")!=-1) );
+    is_ie6up  = (is_ie && !is_ie3 && !is_ie4 && !is_ie5 && !is_ie5_5);
+}
+
+
+function openAdvWin(URL) {
+    var agt=navigator.userAgent.toLowerCase();
+
+    // *** BROWSER VERSION ***
+    // Note: On IE5, these return 4, so use is_ie5up to detect IE5.
+    var is_major = parseInt(navigator.appVersion);
+    var is_minor = parseFloat(navigator.appVersion);
+
+    // Note: Opera and WebTV spoof Navigator.  We do strict client detection.
+    // If you want to allow spoofing, take out the tests for opera and webtv.
+    var is_nav  = ((agt.indexOf('mozilla')!=-1) && (agt.indexOf('spoofer')==-1)
+                   && (agt.indexOf('compatible') == -1) && (agt.indexOf('opera')==-1)
+                   && (agt.indexOf('webtv')==-1) && (agt.indexOf('hotjava')==-1));
+    var is_nav2 = (is_nav && (is_major == 2));
+    var is_nav3 = (is_nav && (is_major == 3));
+    var is_nav4 = (is_nav && (is_major == 4));
+    var is_nav4up = (is_nav && (is_major >= 4));
+    var is_nav4down = (is_nav && (is_major <= 4));
+    var is_navonly      = (is_nav && ((agt.indexOf(";nav") != -1) ||
+                                      (agt.indexOf("; nav") != -1)) );
+    var is_nav6 = (is_nav && (is_major == 5));
+    var is_nav6up = (is_nav && (is_major >= 5));
+    var is_gecko = (agt.indexOf('gecko') != -1);
+
+
+    var is_ie     = ((agt.indexOf("msie") != -1) && (agt.indexOf("opera") == -1));
+    var is_ie3    = (is_ie && (is_major < 4));
+    var is_ie4    = (is_ie && (is_major == 4) && (agt.indexOf("msie 4")!=-1) );
+    var is_ie4up  = (is_ie && (is_major >= 4));
+    var is_ie5    = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.0")!=-1) );
+    var is_ie5_5  = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.5") !=-1));
+    var is_ie5up  = (is_ie && !is_ie3 && !is_ie4);
+    var is_ie5_5up =(is_ie && !is_ie3 && !is_ie4 && !is_ie5);
+    var is_ie6    = (is_ie && (is_major == 4) && (agt.indexOf("msie 6.")!=-1) );
+    var is_ie6up  = (is_ie && !is_ie3 && !is_ie4 && !is_ie5 && !is_ie5_5);
+    
+    var verS = version.replace(".",""); 
+    var winPrefix;
+    if (book == undefined) {
+        winPrefix = "advCol";
+    }
+    else {
+        winPrefix = book;
+    }   
+    var winName = winPrefix+verS;
+    // 3 Oct 2011/rw: remove hyphens since IE does not permit them in a window name argument (go figyah).
+    winName = winName.replace("-","");
+    var win = window.open(URL,winName,"width=540,height=250,resizable=yes");
+    win.creator=window.parent;
+    win.moveTo(0,0);
+    win.focus();
+}
+
+//Status bar messaging
+
+function timStatus(msg) {
+    status=msg;
+}
+
+function setStatus(msg) {
+    status=msg;
+    setTimeout('timStatus("'+msg+'")',1);
+}
+
+//Asynchronous request handler
+
+// Define list of Microsoft XML HTTP ProgIDs.
+//
+var XMLHTTPREQUEST_MS_PROGIDS = new Array(
+                                         "Msxml2.XMLHTTP.7.0",
+                                         "Msxml2.XMLHTTP.6.0",
+                                         "Msxml2.XMLHTTP.5.0",
+                                         "Msxml2.XMLHTTP.4.0",
+                                         "MSXML2.XMLHTTP.3.0",
+                                         "MSXML2.XMLHTTP",
+                                         "Microsoft.XMLHTTP"
+                                         );
+
+//
+// Define ready state constants.
+//
+var XMLHTTPREQUEST_READY_STATE_UNINITIALIZED = 0;
+var XMLHTTPREQUEST_READY_STATE_LOADING       = 1;
+var XMLHTTPREQUEST_READY_STATE_LOADED        = 2;
+var XMLHTTPREQUEST_READY_STATE_INTERACTIVE   = 3;
+var XMLHTTPREQUEST_READY_STATE_COMPLETED     = 4;
+
+//
+// Returns XMLHttpRequest object.
+//
+function getXMLHttpRequest() {
+    var httpRequest = null;
+
+    // Create the appropriate HttpRequest object for the browser.
+    if (window.XMLHttpRequest != null)
+        httpRequest = new window.XMLHttpRequest();
+    else if (window.ActiveXObject != null) {
+        // Must be IE. Find the ActiveXObject.
+        var success = false;
+        for (var i = 0;
+            i < XMLHTTPREQUEST_MS_PROGIDS.length && !success;
+            i++) {
+            try
+            {
+                httpRequest = new ActiveXObject(XMLHTTPREQUEST_MS_PROGIDS[i]);
+                success = true;
+            }
+            catch (ex) {
+            }
+        }
+    }
+
+    // Return the request
+    return httpRequest;
+}
+
+// Stop the search process
+function stopSearch() {
+    var search = window.parent.search;
+    if (search) {
+        if (window.stop) {
+            window.parent.NAV.stop();
+        }
+        else {
+            window.parent.NAV.document.execCommand('Stop');
+        }
+        clearSearch();
+        window.parent.search = '';
+    }
+    else
+        return;
+}
+
+// Clear the search settings and reset display
+function clearSearch(event) {
+    var resetQueryState = getXMLHttpRequest();
+    var searchDoc;
+    var basePath;
+    var staticUrl;
+    var staticTocUrl;
+    var rand = + new Date().getTime();
+    
+    if (window.parent.TEXT) {
+        searchDoc = parent.TEXT.location.toString();
+        basePath = searchDoc.split("#")[0];
+        var searchPath = /\/texis\/search\/hilight2\.html\/\+/g;
+        var newPath = "/"+version+"/books";
+        staticUrl = basePath.replace(searchPath,newPath);
+        if (staticUrl.lastIndexOf("/") != 0) {
+            var splitText = staticUrl.substring(staticUrl.lastIndexOf("/")+1);
+            staticTocUrl = staticUrl.split(splitText)[0];
+        }
+        staticTocUrl = staticTocUrl+"toc.htm"; 
+    }
+    else {
+        searchDoc = parent.location.toString();
+        basePath = searchDoc.split("/texis")[0];
+        if (searchDoc.split("/texis")[1] != null) {
+            staticUrl = basePath+"/"+version;
+        }
+        else {
+            staticUrl = basePath;
+        }
+    }
+
+    if (resetQueryState == null) {
+        // Go back to old method of clearing search
+        if (window.parent.TEXT) {
+            window.parent.sType="clear";
+            document.search_form.reset();
+            document.search_form.submit();
+            window.parent.TEXT.location.replace(staticUrl);
+            return;
+        }
+        else {
+            document.search_form.query.value="";
+            document.search_form.submit();
+            document.search_form.submit();
+        } 
+    }
+    else {
+        resetQueryState.open("GET","/texis/search/clearsearch.xml?CDB="+version+"&rand="+rand,false);
+        resetQueryState.send(null);
+        if (window.parent.TEXT) {
+            window.parent.sType="clear";
+            document.search_form.reset();
+            window.parent.TEXT.location.replace(staticUrl);
+            window.parent.TEXT.mycount=0;
+            window.parent.NAV.location.replace(staticTocUrl);
+        }
+        else {
+            document.location.replace(staticUrl);
+        }
+        
+    }
+}
+
+var version =  getVer();
+var book = getBook();

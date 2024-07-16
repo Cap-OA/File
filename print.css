@@ -1,0 +1,531 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www/w3/org/TR/html4/loose.dtd">
+
+/* DIVs beneath a collapsed node should not display. Use important to make this rule override.
+DIVs beneath an expanded node should display.*/
+DIV.cnode DIV, .hidden, DIV.cnavbucket DIV  {
+	display : none!important;
+}
+
+DIV.navheader, DIV.navfooter {display : none;}
+
+#Layer1 {display : none;}
+
+#Layer2.text {
+	font-family : times, serif;
+	font-size : 12pt;}
+
+DIV.xnode DIV  {
+	display : block;
+}
+
+NOBR.cnode NOBR, .hidden, NOBR.cnavbucket NOBR  {
+	display : none!important;
+}
+
+NOBR.xnode NOBR  {
+	display : block;
+}
+
+NOBR  {
+	display : block;
+}
+
+/* Overall properties.
+Text is the class for the right hand reading area.
+Local is the class for the nav bar under the reading area.
+Nav is the class for the main navigation area.*/
+BODY.text  {
+	margin : 2pt;
+	background : #FFFFEE;
+	font-size : 20pt;
+	font-family : times, serif;
+}
+
+H1.title  {
+	font-size : x-large;
+	text-align : center;
+	font-family : times, serif;
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
+.textloading  {
+	margin-top : 45%;
+	text-align : center;
+}
+
+BODY.local  {
+	background : #FFFFEE;
+}
+
+BODY.nav  {
+	background : #FFFFEE;
+	color : black;
+        font-size : small;
+	font-family : times, serif;
+	
+}
+
+DIV.navchoose  {
+	margin-top : 3pt;
+	margin-left : 3pt;
+}
+
+.nav HR  {
+	margin-bottom : 9pt;
+}
+
+.navchoose DIV  {
+	font-family : times, serif;
+	margin-top : 2pt;
+}
+
+.navchoose H4  {
+	font-family : times, serif;
+}
+
+.navtab A  {
+	color : #000066;
+}
+
+.navtab  {
+	margin-bottom : 2pt;
+	margin-left : 3pt;
+}
+
+.navtoc  {
+	font-family : times, serif;
+	font-size : smaller;
+	margin-left : 3pt;
+}
+
+.navtoc SPAN  {
+	cursor : hand;
+}
+
+SPAN.navtree  {
+	font-family : Symbol;
+	width : 1.5em;
+}
+
+NOBR SPAN.navtree  {
+	font-family : Symbol;
+	width : 1.5em;
+}
+
+NOBR NOBR SPAN.navtree  {
+	font-family : Symbol;
+	width : 3em;
+}
+
+NOBR NOBR NOBR SPAN.navtree  {
+	font-family : Symbol;
+	width : 4.5em;
+}
+
+.navtoc A.navtree  {
+	color : #000066;
+}
+
+SPAN.navtreehover  {
+	color : red;
+	font-family : Symbol;
+	width : 1.5em;
+}
+
+A.navtreehover  {
+	color : red;
+	font-family : Symbol;
+}
+
+.navtoc DIV  {
+	margin-left : 0em;
+}
+
+.navtoc DIV DIV  {
+	margin-left : 1em;
+}
+
+.navtoc NOBR  {
+	margin-left : 0em;
+}
+
+.navtoc NOBR NOBR  {
+	margin-left : 1em;
+}
+
+.navtoc .hover  {
+	color : red;
+	text-decoration : underline;
+}
+
+.navindex .hover  {
+	color : red;
+}
+
+.navtoc A:link, .navtoc A:visited  {
+	color : black;
+	text-decoration : underline;
+	font-family : times, serif;
+}
+
+.navselect  {
+	margin-top : 3pt;
+	margin-right : 3pt;
+	margin-bottom : 3pt;
+	margin-left : 3pt;
+	font-family : times, serif;
+	font-size : smaller;
+	cursor : hand;
+}
+
+.navindex  {
+	font-family : times, serif;
+	font-size : smaller;
+	margin-left : 3pt;
+}
+
+.navbucket  {
+	margin-top : 5pt;
+	margin-bottom : 3pt;
+	text-decoration : underline;
+	font-family : verdana, times, serif;
+	font-size : smaller;
+	cursor : hand;
+	color : black;
+}
+
+.cnavbucket  {
+	margin-top : 5pt;
+	margin-bottom : 3pt;
+	text-decoration : underline;
+	font-family : times, serif;
+	font-size : smaller;
+	cursor : hand;
+	color : black;
+}
+
+.navindex1  {
+	font-family : times, serif;
+	margin-top : 1pt;
+	margin-bottom : 1pt;
+	margin-left : 3pt;
+	text-decoration : none;
+	cursor : hand;
+	color : black;
+}
+
+.navindex2  {
+	font-family : times, serif;
+	margin-top : 1pt;
+	margin-bottom : 1pt;
+	margin-left : 8pt;
+	text-decoration : none;
+	cursor : hand;
+	color : black;
+}
+
+.navindex3  {
+	font-family : times, serif;
+	margin-top : 1pt;
+	margin-bottom : 1pt;
+	margin-left : 13pt;
+	text-decoration : none;
+	cursor : hand;
+	color : black;
+}
+
+.navtts  {
+	margin-top : 3pt;
+	margin-left : 3pt;
+	margin-bottom : 3pt;
+	font-family : times, serif;
+}
+
+.navttsenabled  {
+	margin : 0pt;
+	cursor : hand;
+}
+
+.localprev  {
+	margin : 0pt;
+	padding : 0pt;
+	display : inline;
+	cursor : hand;
+}
+
+.localnext  {
+	margin : 0pt;
+	padding : 0pt;
+	display : inline;
+	cursor : hand;
+}
+
+.localfeedback  {
+	margin : 0pt;
+	padding : 0pt;
+	display : inline;
+	cursor : hand;
+}
+
+A.localtext  {
+	color : #000066;
+}
+
+.text, .text DIV  {
+	color : black;
+	font-family : times, serif;
+	font-size : 12pt;
+
+}
+
+.enter  {
+	color : black;
+	font-family : times, serif;
+}
+
+BODY.enter  {
+	background-color : silver;
+}
+
+.enter_selection  {
+	background : silver;
+}
+
+.enter DIV  {
+	padding : 3pt;
+	margin : 3pt;
+	height : 350pt;
+	width : 320pt;
+	position : absolute;
+	left : 10pt;
+}
+
+.comment  {
+	color : black;
+	background : silver;
+	font-family : times, serif;
+}
+
+div.navheader {
+	text-align : right;
+}
+
+div.navfooter {
+	text-align : right;
+}
+
+h1, div.titlepage h1.title {
+	color : darkblue;
+	font-size : x-large;
+	font-family : times, serif;
+}
+
+h2, div.titlepage h2.title {
+	color : darkblue;
+	font-size : 16pt;
+	font-family : times, serif;
+}
+
+h3, div.titlepage h3.title {
+	color : darkblue;
+	font-size : 10pt;
+	font-family : times, serif;
+}
+
+h4, div.titlepage h4.title {
+	color : darkblue;
+	font-size : 10pt;
+	font-family : times, serif;
+	margin: 0;
+	padding: 0;
+}
+
+h5, div.titlepage h5.title {
+	color : #0000FF;
+	font-size : 10pt;
+	font-weight : normal;
+	font-family : times, serif;
+	margin: 0;
+	padding: 0;
+}
+
+div.warning {
+font-style : italic;
+font-family : times, serif;
+font-size : 12pt;
+	}
+
+H2.SECT2  {
+	background : url(images/sect2ban.gif) no-repeat;
+	color : #FFFFEE;
+	font-size : 16pt;
+	padding-left : 2px;
+	padding-top : 2px;
+	padding-bottom : 2px;
+	padding-right : 200px;
+	font-family : times, serif;
+}
+
+H1.SECT1  {
+	font-size : 18pt;
+	font-family : times, serif;
+}
+
+DT  {font-weight : bold;
+     font-size : small;
+     font-family : times, serif;
+}
+
+H3.SECT3 { background : url(images/sect2ban.gif) no-repeat;
+	   color : #FFFFEE;
+	   font-size : 10pt;
+	   padding-left : 2px;
+	   padding-top : 2px;
+	   padding-bottom : 2px;
+	   padding-right : 200px;
+}
+
+H1  {   font-family : times, serif;
+	font-size : 18;
+	color : darkblue;
+	font-weight : bold;	
+}
+
+/* Heather's general additions: added because Netscape stinks.*/
+
+p, ul, dl, ol, li, dt, dd, td, th, blockquote, div.glossterm, div.abqinputfile, div.seealsosections {
+	font-size : 12pt;
+        font-family : times, serif;
+}
+
+div.glossdef { font-size : 12pt;
+               font-family : times, serif;
+	       padding-left: 30px;	
+}
+
+div.paramlistentry.listitem { font-size : 12pt;
+               font-family : times, serif;
+	       padding-left: 30px;	
+}
+ 
+div.term {font-size : 12pt;
+          font-family : times, serif;
+}
+
+div.variablelist { font-size : 12pt;
+                   font-family : times, serif; 
+}
+
+
+div.extra { font-size : 12pt;
+            font-family : times, serif;	     	
+}
+  	 
+div.indent {   font-size : 12pt;
+               font-family : times, serif;
+	       padding-left: 30px;
+}  
+div.smallindent {   font-size : 12pt;
+               font-family : times, serif;
+	       padding-left: 25px;
+}  
+
+p.indent, li.indent {
+	       font-size : 12pt;
+               font-family : times, serif;
+	       padding-left: 30px;
+}
+  
+div.noindent  {
+	       font-size : 12pt;
+               font-family : times, serif;
+	       padding-left: 0px;
+}  
+
+div.halfindent  {
+	       font-size : 12pt;
+               font-family : times, serif;
+	       padding-left: 15px;
+}  
+ pre {
+   font-size : 12pt; 
+   vertical-align: text-top;
+}
+
+pre b {font-family : times, serif;
+       font-weight: bold;
+}  
+
+div.usage pre.programlisting {font-family : times, serif;
+}
+
+h3.title {font-family : times, serif;
+     color : darkblue;
+     font-weight: bold;
+     font-size : 12pt;
+}
+
+h2.title {font-family : times, serif;
+  	color : darkblue;
+      	font-weight: bold;
+	font-size : 16pt;	
+}
+
+b.abqscrcommand i.replaceable, pre.programlisting i.replaceable, tt.abqscrcommand i.replaceable {font-style: italic; font-weight: normal; font-family : times, serif;
+}
+ 
+div.programlisting div.lineannotation, span.programlisting div.lineannotation, pre.programlisting i.lineannotation {font-style: italic; font-family : times, serif;
+}
+
+div.scrcommandsyntax div.programlisting div.abqscrcommand, span.programlisting b.abqscrcommand, div.scrcommandsyntax div.programlisting div.abqscrdata, span.programlisting b.abqscrdata {font-weight: bold; font-family : times, serif;
+}	
+
+pre.programlisting b.abqscrcommand, pre.programlisting b.abqscrdata {font-weight: normal; font-family : courier, monotype;
+}
+
+div.pyindexterm div.para {font-style:normal;
+}
+
+pre.programlisting span.preusage {font-weight: bold; font-family : times, serif; color : #660033; 
+}
+
+div.informaltable {margin: 0; padding:0;
+}
+
+a img, img {border: 0;
+}
+	
+pre.pysegment i.pyarg {font-weight: normal; font-family : times, serif; font-style : italic;
+} 
+div.pyaccessdesc pre i.pyarg {font-weight: normal; font-family : times, serif; font-style : italic;
+} 
+
+a.default  {color: black;
+}
+a.unchanged  {color: black;
+}
+a.changed  {color: darkblue;
+}
+a.changed  {color: #00CC00;
+}
+a.removed {color: red;
+}
+
+B  {
+	font-weight : bold;
+}
+	
+
+font.nav {font-family: times, serif; 
+     font-size :10px;
+     color: #003366;
+}	
+td.nav {
+	font-size : 10px;
+        font-family : times, serif;
+}
+.mmhit { background : #CCCCFF ;
+}
+.mmhitC { background : #FF9999 ;
+}

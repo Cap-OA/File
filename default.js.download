@@ -1,0 +1,679 @@
+var collapsed = "<img alt=\"expand\" src=\"$$$SLF$$$images/collapsd.gif\" border=\"0\">";
+var expanded = "<img alt=\"collapse\" src=\"$$$SLF$$$images/expanded.gif\" border=\"0\">";
+var empty = "<img src=\"$$$SLF$$$images/empty.gif\" border=\"0\">";
+var leaf = "<img src=\"$$$SLF$$$images/leaf.gif\" border=\"0\">";
+var tocKindexMode = null;
+var tocType; // Either "xml" if using the XML TOC or "js" if using js TOC.
+var cssSupport; // true for ns 4 or ie3 or ie4 or ie5, false otherwise.
+var cssHiding; // true for IE, false for NS
+var cssIndenting; // false for IE3, true otherwise
+var navDoc;
+var tocKindexMode = "toc";
+var enableFeedback;
+var startPage = null;
+var windowFeedback = null;
+var slfString = "";
+var currentToc = "toc.htm";
+
+var bMSIE = false;
+var bMSIE3 = false, bMSIE4 = false, bMSIE4_beta = false, bMSIE4_01 = false, bMSIE5 = false;
+var bNetscape = false;
+var bNetscape_2 = false, bNetscape_3 = false, bNetscape_4 = false, bNetscape_6 = false;
+var N6 = false;
+
+function browser()
+{
+	// borrowed from Microsoft
+    var ua = navigator.userAgent;
+    var an = navigator.appName;
+
+    // Is it IE?
+    bNetscape = (ua.indexOf("MSIE")>=1);
+    if (bNetscape)
+	{
+        // IE3
+        bNetscape_3 = (ua.indexOf("MSIE 3.0")>=1);
+
+        // IE4
+        var iMSIE4 = ua.indexOf("MSIE 4.0");
+        bNetscape_6 = (iMSIE4>=1);
+        if (bNetscape_6)
+        {
+            var sMinorVer = ua.charAt(iMSIE4+8);
+            // Some folks are still running an IE4 beta!
+            // (the Mac IE team used a 'p' to mark their beta)
+            bMSIE4_beta = bMSIE4 && ((sMinorVer == "b") || (sMinorVer == "p"));
+
+            // IE4.01
+            bMSIE4_01 = bMSIE4 && (sMinorVer == "1");
+        }
+        // IE5
+	var msie = ua.indexOf("MSIE ");
+	if (msie>=1)
+	{
+		bNetscape_6 = (parseInt(ua.substring(msie+5, ua.indexOf(".", msie))) >= 5);
+        }
+    }
+    else if (an == "Netscape")
+    {
+        bNetscape = true;
+        appVer = parseInt(navigator.appVersion);
+        if (appVer >= 5)
+            bNetscape_6 = true, N6 = true;
+        else if (appVer >= 4)
+            bNetscape_4 = true;
+        else if (appVer >= 3)
+            bNetscape_3 = true;
+        else
+            bNetscape_2 = true;
+    }
+
+	// Figure out CSS support.
+
+	if ( bMSIE4 || bMSIE5 || bNetscape_6)   //netscape 4.01 & 4.6 were screwing up the toc indentation when using CSS
+	{
+		cssSupport = true;
+		cssHiding = !bNetscape_4;
+		cssIndentation = !bMSIE3;
+	}
+	else
+		cssSupport = false;
+
+	// Can we do feedback?
+	if (document.location.protocol == "http:"
+		|| document.location.protocol == "http"
+		|| document.location.protocol == "https"
+		|| document.location.protocol == "https:"
+		|| document.location.protocol == ""
+		|| document.location.protocol == null)
+		enableFeedback = true;
+	else
+		enableFeedback = false;
+
+}
+
+function doSLF(mainStr)
+{
+	return replaceString(mainStr, "$$$SLF$$$", slfString);
+}
+
+// Following routines come from Danny Goodman's JavaScript Bible
+function getFront(mainStr, searchStr)
+{
+	foundOffset = mainStr.indexOf(searchStr);
+	if (foundOffset == -1)
+	{
+		return null;
+	}
+	return mainStr.substring(0, foundOffset);
+}
+
+function getEnd(mainStr, searchStr)
+{
+	foundOffset = mainStr.indexOf(searchStr);
+	if (foundOffset == -1)
+	{
+		return null;
+	}
+	return mainStr.substring(foundOffset + searchStr.length, mainStr.length);
+}
+
+function replaceString(mainStr, searchStr, replaceStr)
+{
+	var front = getFront(mainStr, searchStr);
+	var end = getEnd(mainStr, searchStr);
+	if (front != null && end != null)
+	{
+		return front + replaceStr + end;
+	}
+	return mainStr;
+}
+
+// End of routines from Danny Goodman.
+
+
+//moved this functionality outside of doInit() since the SLF wasn't
+//being set early enough on reload.  This function will get called before
+//onLoad()
+//mcampbel - 11/02/99
+function setSLF(slf)
+{
+	if (slf != null)
+		slfString = slf;
+
+	collapsed = doSLF(collapsed);
+	expanded = doSLF(expanded);
+	empty = doSLF(empty);
+	leaf = doSLF(leaf);
+}
+
+
+
+function doInit()
+{
+	navFrame = window.frames[2];
+	textFrame = window.frames["TEXT"];
+	localFrame = window.frames["LOCAL"];
+
+    if ( bMSIE4 || bMSIE5 )        // is Microsoft Internet Explorer; return version number
+	{
+		tocType = "xml";
+	}
+	else
+	{
+		tocType = "js"
+	}
+
+	// Check if we are reloading and the navigation area could
+	// not reload
+	if (navFrame.EpicTOCLoaded != null)
+	{
+		if (navFrame.EpicTOCLoaded == true)
+		{
+			//We must be reloading and the nav area is reloaded already so
+			return;
+		}
+	}
+	// Check for a start page.
+	if (document.location.search != null && document.location.search != "")
+	{
+		if (document.location.search.substring(0,9) == "?startat=")
+		{
+			// Got a start page
+			// scuzner added document.location.hash to allow for linking to hashpoint
+			startPage = document.location.search.substring(9,document.location.search.length)+document.location.hash;
+		}
+	}
+
+	navDoc = navFrame.document;
+
+	if (tocType == "js")
+	{
+		Node.navLoaded = false;
+		if (window.parent.bNetscape_3)
+		{
+			navFrame.open(currentToc, navFrame.name);
+		}
+		else
+		{
+			navFrame.document.location.replace(currentToc);
+		}
+	}
+	else
+	{
+		navFrame.document.location.replace("nav.htm");
+		localFrame.document.location.replace("npflocal.htm");
+	}
+	window.focus();
+}
+
+function simpleExpandCollapse(nodeIndex)
+{
+	var newToc;
+	if (Node.xref[nodeIndex].otherNav != null)
+	{
+		newToc = Node.xref[nodeIndex].otherNav + ".htm";
+	}
+	else
+		newToc = currentToc;
+
+	Node.xref[nodeIndex].expandCollapse();
+	if (newToc != currentToc)
+	{
+		currentToc = newToc;
+		Node.navLoaded = false;
+	}
+
+	if (N6)
+	{
+		navFrame.document.location.replace(currentToc);
+	}
+	else
+	{
+		navFrame.open(currentToc, navFrame.name);
+	}
+}
+
+function tocExpandCollapse(nodeIndex)
+{
+	Node.xref[nodeIndex].expandCollapse();
+}
+
+function gotoToc()
+{
+	tocKindexMode = "toc";
+}
+
+function gotoIndex()
+{
+	tocKindexMode = "kindex";
+}
+
+function kindexHref(nodeIndex)
+{
+	var currentNode = Node.xref[nodeIndex];
+	if (currentNode == null)
+		return;
+	var hrefArray = currentNode.hrefArray;
+	if (hrefArray == null || hrefArray.length == null)
+		return;
+	if (hrefArray.length == 1)
+	{
+		window.frames["TEXT"].location = hrefArray[0];
+	}
+	else
+	{
+		var selectWindow = window.open("", "select", "height:300,width:350");
+		var nameArray = currentNode.nameArray;
+		selectWindow.document.writeln("<html><head><title>Select Reference</title></head>");
+		selectWindow.document.writeln("<body>");
+		for (i = 0; i < hrefArray.length; i++)
+		{
+			selectWindow.document.writeln("<p><a href=\"" + hrefArray[i] + "\">" + nameArray[i] + "</a>");
+		}
+	}
+}
+
+function Node(index, parent, mode, href, text, tocClass, otherNav)
+{
+// This is the constructor for the Node object. Yes,
+// we are going to be object oriented.
+	this.index = index;
+	Node.xref[index] = this;
+	if(parent != null)
+	{
+		if(Node.xhref) 
+			 Node.xhref[href] = this;
+	}
+	this.parent = parent;
+	this.mode = mode;
+	this.children = new Array();
+	this.href = href;
+	this.text = text;
+	this.count = 0;
+	this.mycount = 0;
+	if (tocClass == "")
+		this.tocClass = "";
+	else
+		this.tocClass = tocClass;
+	if (otherNav != null)
+		this.otherNav = otherNav;
+	else
+	{
+		if (mode != "expanded" && mode != "leaf" && mode != "collapsed")
+			this.otherNav = mode;
+		else
+			this.otherNav = null;
+	}
+	this.output = Node_output;
+	this.addChild = Node_addChild;
+	this.expandCollapse = Node_expandCollapse;
+	if (parent != null)
+		this.level = parent.level + 1;
+	else
+		this.level = 0;
+}
+
+function Node_output(openDoc)
+{
+// Converts a Node to the string appearance.
+// We do entirely different processing if CSS support
+// is available so check that first.
+	var stringValue;
+	if (window.cssSupport)
+	{
+		if ((this.tocClass == "kindex") ||
+				(this.tocClass == "navindex1") ||
+				(this.tocClass == "navindex2") ||
+				(this.tocClass == "navindex3"))
+		{
+			var classValue;
+			var hrefValue;
+			if (this.tocClass == "kindex")
+			{
+				classValue = "navbucket";
+				hrefValue = "window.parent.simpleExpandCollapse";
+			}
+			else
+			{
+				classValue = this.tocClass;
+				hrefValue = "window.parent.kindexHref";
+			}
+			if (bMSIE3)
+				stringValue = "<div>"
+					+ this.text + "#1#</div>";
+			else
+				stringValue = "<div><a href=\"javascript:" + hrefValue + "("
+					+ this.index + ");\" class=\"" + classValue
+					+ "\">###"
+					+ this.text + "</a></div>";
+			openDoc.writeln(stringValue);
+			if ((this.mode != "collapsed" || bMSIE3) && this.mode != "leaf")
+			{
+				for (var i = 0; i < this.children.length; i++)
+				{
+					this.children[i].output(openDoc);
+				}
+			}
+		}
+		else
+		{
+			var fullCount = "" + Node.xref[0].count;
+			var fLength = fullCount.length;
+			var thisCount = "" + this.count;
+			var tLength = thisCount.length;
+			var clearCount = fLength - tLength;
+			var cSpace='';
+			while (clearCount > 0) {
+				cSpace = cSpace + "&nbsp;";
+				clearCount -=1;
+			}
+			var countString;
+			if (this.count == 0) {
+				countString = "<font face=monospace>" + cSpace + "&nbsp;</font> ";
+			}
+			else {
+				countString = "<font face=monospace color=red>" + cSpace + this.count + "</font> ";
+			}
+
+
+			if ((this.mode == "collapsed" || this.mode == "expanded") && !bMSIE3)
+				stringValue = "<div><nobr>" + countString + "<a class=\"navtree\" href=\"javascript:window.parent.simpleExpandCollapse("
+					+ this.index + ");\">";
+			else
+				stringValue = "<div><nobr>" + countString;
+				
+			if (bMSIE3)
+			{
+				for (var i = 0; i < this.level; i++)
+					stringValue = stringValue + window.parent.empty;
+			}
+			else
+			{
+				if (this.mode == "collapsed")
+					stringValue = stringValue + collapsed + "</a>";
+				else if (this.mode == "expanded")
+					stringValue = stringValue + expanded + "</a>";
+				else
+					stringValue = stringValue + empty;
+			}
+			if (this.href != null)
+			{
+				stringValue = stringValue + "<a href=\""
+					+ this.href + "\" target=\"TEXT\" class=\"" + this.tocClass + "\">" + this.text + "</a></nobr>";
+			}
+			else
+				stringValue = stringValue + "<a class=\"" + this.tocClass + "\">"
+					+ this.text + "#%#</a></nobr>";
+			openDoc.writeln(stringValue);
+			if (bMSIE3)
+				openDoc.writeln("</div>");
+			if ((this.mode != "collapsed" || bMSIE3) && this.mode != "leaf")
+			{
+				for (var i = 0; i < this.children.length; i++)
+				{
+					this.children[i].output(openDoc);
+				}
+			}
+			if (!bMSIE3)
+				openDoc.writeln("</div>");
+		}
+	}
+	else
+	{
+		// here is the old browser version.
+		if ((this.tocClass == "kindex") ||
+				(this.tocClass == "navindex1") ||
+				(this.tocClass == "navindex2") ||
+				(this.tocClass == "navindex3"))
+		{
+			var indentValue;
+			var hrefValue;
+			if (this.tocClass == "kindex")
+			{
+				hrefValue = "javascript:window.parent.simpleExpandCollapse";
+				indentValue = "";
+			}
+			else
+			{
+				hrefValue = "javascript:window.parent.kindexHref";
+				indentValue = window.parent.empty;
+				if (this.tocClass == "navindex2")
+				{
+					indentValue = indentValue + window.parent.empty;
+				}
+				else if (this.tocClass == "navindex3")
+				{
+					indentValue = indentValue + window.parent.empty + window.parent.empty;
+				}
+			}
+			stringValue = "<nobr>" + indentValue
+				+ "<a href=\"" + hrefValue + "("
+				+ this.index + ");\">"
+				+ this.text + "#2#</a></nobr>";
+			openDoc.writeln(stringValue + "<br>");
+			if ((this.mode != "collapsed" || bMSIE3) && this.mode != "leaf")
+			{
+				for (var i = 0; i < this.children.length; i++)
+				{
+					this.children[i].output(openDoc);
+				}
+			}
+		}
+		else
+		{
+		// Old browser doing the TOC
+
+			// Compute the indentValue
+			indentValue = "";
+			for (var i = 0; i < this.level; i++)
+				indentValue = indentValue + window.parent.empty;
+			stringValue = "<nobr>" + indentValue;
+			if (this.count > 0)
+				stringValue = stringValue + this.count + ' ';
+			// If this is an expanded or a collapsed node, then
+			// the img is a link.
+			if ((this.mode == "collapsed" || this.mode == "expanded") && !bMSIE3)
+			{
+				stringValue = stringValue
+					+ "<a href=\"javascript:window.parent.simpleExpandCollapse("
+					+ this.index + ");\">";
+				if (this.mode == "collapsed")
+					stringValue = stringValue + window.parent.collapsed;
+				else
+					stringValue = stringValue + window.parent.expanded;
+				stringValue = stringValue + "</a>";
+			}
+			else
+			{
+				stringValue = stringValue + window.parent.leaf;
+			}
+			// If this has an href, then make a link
+			if (this.href != null)
+				stringValue = stringValue
+					+ "<a href=\"" + this.href + "\" target=\"TEXT\">"
+					+ this.text + "</a>";
+			else
+				stringValue = stringValue
+					+ this.text;
+			openDoc.writeln(stringValue + "</nobr><br>");
+			if ((this.mode != "collapsed" || bMSIE3) && this.mode != "leaf")
+			{
+				for (var i = 0; i < this.children.length; i++)
+				{
+					this.children[i].output(openDoc);
+				}
+			}
+		}
+	}
+}
+
+function Node_addChild(index, mode, href, text, tocClass)
+{
+// Adds a child Node to the children array.
+	var otherNav;
+	if (mode != "leaf" && mode != "collapsed" && mode != "expanded")
+	{
+		otherNav = mode;
+		mode = "collapsed";
+	}
+	else
+		otherNav = null;
+
+	var newNode = new Node(index, this, mode, href, text, tocClass, otherNav);
+	this.children[this.children.length] = newNode;
+	return newNode;
+}
+
+function Node_expandCollapse()
+{
+	if (this.mode == "expanded")
+		this.mode = "collapsed";
+	else if (this.mode == "collapsed")
+		this.mode = "expanded";
+}
+
+function getNode()
+{
+	return Node;
+}
+
+function pageNext()
+{
+    var textFrame = window.frames["TEXT"];
+    var hrefTarget = textFrame.location.pathname;
+
+    var targetFound = false;
+
+	if (hrefTarget.lastIndexOf("\\") != 0)
+	{
+		hrefTarget = hrefTarget.substring(hrefTarget.lastIndexOf("\\")+1);
+	}
+	if (hrefTarget.lastIndexOf("/") != 0)
+	{
+		hrefTarget = hrefTarget.substring(hrefTarget.lastIndexOf("/")+1);
+	}
+
+	for (var i = 0; i < window.Node.rootChunkArrayLength; i++)
+	{
+		thisNode = window.Node.rootChunkArray[i];
+		hrefString = thisNode.href;
+		if (hrefString == null)
+			continue;
+		if (hrefString == hrefTarget)
+		{
+			targetFound = true;
+		}
+		else if (targetFound)
+		{
+			if (textFrame != null)
+			{
+				if (bMSIE3)
+					textFrame.open(hrefString,textFrame.name);
+				else
+					textFrame.document.location = hrefString;
+			}
+			return;
+		}
+	}
+
+    alert(messages.noNextPage);
+}
+
+function pagePrev()
+{
+    var textFrame = window.frames["TEXT"];
+    var hrefTarget = textFrame.location.pathname;
+
+    var targetFound = false;
+
+	if (hrefTarget.lastIndexOf("\\") != 0)
+	{
+		hrefTarget = hrefTarget.substring(hrefTarget.lastIndexOf("\\")+1);
+	}
+	if (hrefTarget.lastIndexOf("/") != 0)
+	{
+		hrefTarget = hrefTarget.substring(hrefTarget.lastIndexOf("/")+1);
+	}
+	for (var i = window.Node.rootChunkArrayLength - 1; i > -1 ; i--)
+	{
+		thisNode = window.Node.rootChunkArray[i];
+		hrefString = thisNode.href;
+		if (hrefString == null)
+			continue;
+		if (hrefString == hrefTarget)
+		{
+			targetFound = true;
+		}
+		else if (targetFound)
+		{
+			if (textFrame != null)
+			{
+				if (bMSIE3)
+					textFrame.open(hrefString,textFrame.name);
+				else
+					textFrame.document.location = hrefString;
+			}
+			return;
+		}
+	}
+
+    alert(messages.noPreviousPage);
+}
+
+function getTreeLoc()
+{
+// return should look like: <input type="hidden" name="TreeLoc" value="1">
+   var hrefTarget = window.frames["TEXT"].location.pathname;
+
+    var targetFound = false;
+
+	if (hrefTarget.lastIndexOf("/") != 0)
+	{
+		hrefTarget = hrefTarget.substring(hrefTarget.lastIndexOf("/")+1);
+	}
+	for (var i = 0; i < window.Node.rootChunkArrayLength && !targetFound; i++)
+	{
+		thisNode = window.Node.rootChunkArray[i];
+		hrefString = thisNode.href;
+		if (hrefString == null)
+			continue;
+		if (hrefString == hrefTarget)
+		{
+			targetFound = true;
+			if (thisNode.text != null)
+			{
+				return("<input type=\"hidden\" name=\"TreeLoc\" value=\"" + thisNode.text + "#^#\">");
+			}
+		}
+	}
+	return("<input type=\"hidden\" name=\"TreeLoc\" value=\"1\">");
+}
+
+function provideFeedback()
+{
+	if (window.windowFeedback == null || window.windowFeedback.closed == true)
+		window.windowFeedback = window.open("enter2.htm", "feedback", "width=600,height=450");
+	if (window.windowFeedback != null)
+	{
+		if (window.windowFeedback.opener == null)
+			window.windowFeedback.opener = self;
+		if (window.windowFeedback.focus != null)
+			window.windowFeedback.focus();
+	}
+}
+
+function cancelFeedback()
+{
+	if (tocType == "js")
+	{
+		if (window.windowFeedback == null || window.windowFeedback.closed == true)
+			return;
+		window.windowFeedback.close();
+	}
+}
+
+// Determine the browser and the TOC type
+browser();
+	
+

@@ -1,0 +1,675 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www/w3/org/TR/html4/loose.dtd">
+
+/* DIVs beneath a collapsed node should not display. Use important to make this rule override.
+DIVs beneath an expanded node should display.*/
+DIV.cnode DIV, .hidden, DIV.cnavbucket DIV  {
+	display : none!important;
+}
+
+DIV.xnode DIV  {
+	display : block;
+}
+
+NOBR.cnode NOBR, .hidden, NOBR.cnavbucket NOBR  {
+	display : none!important;
+}
+
+NOBR.xnode NOBR  {
+	display : block;
+}
+
+NOBR  {
+	display : block;
+}
+
+/* Overall properties.
+Text is the class for the right hand reading area.
+Local is the class for the nav bar under the reading area.
+Nav is the class for the main navigation area.*/
+BODY.text  {
+	margin : 2pt;
+	background : #FFFFFF;
+	font-size : 12pt;
+	font-family : arial, helvetica, sans-serif;
+}
+
+H1.title  {
+	font-size : x-large;
+	text-align : center;
+	font-family : arial, helvetica, sans-serif;
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
+.textloading  {
+	margin-top : 45%;
+	text-align : center;
+}
+
+BODY.local  {
+	background : #FFFFFF;
+}
+
+BODY.nav  {
+	background : #FFF3E1;
+	color : black;
+        font-size : small;
+	font-family : arial, helvetica, sans-serif;
+	
+}
+
+DIV.navchoose  {
+	margin-top : 3pt;
+	margin-left : 3pt;
+}
+
+.nav HR  {
+	margin-bottom : 9pt;
+}
+
+.navchoose DIV  {
+	font-family : arial, helvetica, sans-serif;
+	margin-top : 2pt;
+}
+
+.navchoose H4  {
+	font-family : arial, helvetica, sans-serif;
+}
+
+.navtab A  {
+	color : #000066;
+}
+
+.navtab  {
+	margin-bottom : 2pt;
+	margin-left : 3pt;
+}
+
+.navtoc  {
+	font-family : arial, Helvetica, sans-serif;
+	font-size : smaller;
+	margin-left : 3pt;
+}
+
+.navtoc SPAN  {
+	cursor : hand;
+}
+
+SPAN.navtree  {
+	font-family : Symbol;
+	width : 1.5em;
+}
+
+NOBR SPAN.navtree  {
+	font-family : Symbol;
+	width : 1.5em;
+}
+
+NOBR NOBR SPAN.navtree  {
+	font-family : Symbol;
+	width : 3em;
+}
+
+NOBR NOBR NOBR SPAN.navtree  {
+	font-family : Symbol;
+	width : 4.5em;
+}
+
+.navtoc A.navtree  {
+	color : #000066;
+}
+
+SPAN.navtreehover  {
+	color : red;
+	font-family : Symbol;
+	width : 1.5em;
+}
+
+A.navtreehover  {
+	color : red;
+	font-family : Symbol;
+}
+
+.navtoc DIV  {
+	margin-left : 0em;
+}
+
+.navtoc DIV DIV  {
+	margin-left : 1em;
+	 
+}
+
+.navtoc NOBR  {
+	margin-left : 0em;
+}
+
+.navtoc NOBR NOBR  {
+	margin-left : 1em;
+}
+
+.navtoc .hover  {
+	color : red;
+	text-decoration : underline;
+}
+
+.navindex .hover  {
+	color : red;
+}
+
+.navtoc A:link, .navtoc A:visited  {
+	color : black;
+	text-decoration : underline;
+	font-family : arial, helvetica, sans-serif;
+}
+
+.navselect  {
+	margin-top : 3pt;
+	margin-right : 3pt;
+	margin-bottom : 3pt;
+	margin-left : 3pt;
+	font-family : arial, helvetica, sans-serif;
+	font-size : smaller;
+	cursor : hand;
+}
+
+.navindex  {
+	font-family : arial, helvetica, sans-serif;
+	font-size : smaller;
+	margin-left : 3pt;
+}
+
+.navbucket  {
+	margin-top : 5pt;
+	margin-bottom : 3pt;
+	text-decoration : underline;
+	font-family : verdana, arial, helvetica, sans-serif;
+	font-size : smaller;
+	cursor : hand;
+	color : black;
+}
+
+.cnavbucket  {
+	margin-top : 5pt;
+	margin-bottom : 3pt;
+	text-decoration : underline;
+	font-family : arial, helvetica, sans-serif;
+	font-size : smaller;
+	cursor : hand;
+	color : black;
+}
+
+.navindex1  {
+	font-family : arial, helvetica, sans-serif;
+	margin-top : 1pt;
+	margin-bottom : 1pt;
+	margin-left : 3pt;
+	text-decoration : none;
+	cursor : hand;
+	color : black;
+}
+
+.navindex2  {
+	font-family : arial, helvetica, sans-serif;
+	margin-top : 1pt;
+	margin-bottom : 1pt;
+	margin-left : 8pt;
+	text-decoration : none;
+	cursor : hand;
+	color : black;
+}
+
+.navindex3  {
+	font-family : arial, helvetica, sans-serif;
+	margin-top : 1pt;
+	margin-bottom : 1pt;
+	margin-left : 13pt;
+	text-decoration : none;
+	cursor : hand;
+	color : black;
+}
+
+.navtts  {
+	margin-top : 3pt;
+	margin-left : 3pt;
+	margin-bottom : 3pt;
+	font-family : arial, helvetica, sans-serif;
+}
+
+.navttsenabled  {
+	margin : 0pt;
+	cursor : hand;
+}
+
+.localprev  {
+	margin : 0pt;
+	padding : 0pt;
+	display : inline;
+	cursor : hand;
+}
+
+.localnext  {
+	margin : 0pt;
+	padding : 0pt;
+	display : inline;
+	cursor : hand;
+}
+
+.localfeedback  {
+	margin : 0pt;
+	padding : 0pt;
+	display : inline;
+	cursor : hand;
+}
+
+A.localtext  {
+	color : #000066;
+}
+
+.text, .text DIV  {
+	color : black;
+	font-family : arial, helvetica, sans-serif;
+	font-size : 12pt;
+
+}
+
+.enter  {
+	color : black;
+	font-family : arial, helvetica, sans-serif;
+}
+
+BODY.enter  {
+	background-color : silver;
+}
+
+.enter_selection  {
+	background : silver;
+}
+
+.enter DIV  {
+	padding : 3pt;
+	margin : 3pt;
+	height : 350pt;
+	width : 320pt;
+	position : absolute;
+	left : 10pt;
+}
+
+.comment  {
+	color : black;
+	background : silver;
+	font-family : arial, helvetica, sans-serif;
+}
+
+div.navheader {
+	text-align : right;
+}
+
+.howtofindexamples {
+     font-size: 11pt;
+     color: #004D48;
+}
+
+div.navheader table {
+    margin-bottom: 0em;
+}
+
+div.navheader table td {
+    text-align: right;
+}
+
+div.abqkeysection, div.abqmanualintro, div.book, div.chapter {
+    clear: both;
+}
+
+div.navfooter {
+	text-align : right;
+}
+
+h1, div.titlepage h1.title, div.titlepage h1.title div.title {
+	color : #004D48;
+	font-size : x-large;
+	font-family : arial, helvetica, sans-serif;
+}
+
+h2, div.titlepage h2.title, div.titlepage h2.title div.title {
+	color : #004D48;
+	font-size : 16pt;
+	font-family : arial, helvetica, sans-serif;
+}
+
+h3, div.titlepage h3.title, div.titlepage h3.title div.title {
+	color : #004D48;
+	font-size : 12pt;
+	font-family : arial, helvetica, sans-serif;
+}
+
+h4, div.titlepage h4.title,  div.titlepage h4.title div.title {
+	color : #004D48;
+	font-size : 12pt;
+	font-family : arial, helvetica, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+h5, div.titlepage h5.title, div.titlepage h5.title div.title  {
+	color : #004D48;
+	font-size : 12pt;
+	font-weight : normal;
+	font-family : arial, helvetica, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+div.warning {
+font-style : italic;
+font-family : arial, helvetica, sans-serif;
+font-size : 12pt;
+	}
+
+div.remark {
+    color: #0000FF;
+    font-weight: bold;
+    }
+
+H2.SECT2  {
+	background : url(images/sect2ban.gif) no-repeat;
+	color : #FFFFFF;
+	font-size : 16pt;
+	padding-left : 2px;
+	padding-top : 2px;
+	padding-bottom : 2px;
+	padding-right : 200px;
+	font-family : arial, helvetica, sans-serif;
+}
+
+H1.SECT1  {
+	font-size : 18pt;
+	font-family : arial, helvetica, sans-serif;
+}
+
+DT  {font-weight : bold;
+     font-size : small;
+     font-family : arial, helvetica, sans-serif;
+}
+
+H3.SECT3 { background : url(images/sect2ban.gif) no-repeat;
+	   color : #FFFFFF;
+	   font-size : 14pt;
+	   padding-left : 2px;
+	   padding-top : 2px;
+	   padding-bottom : 2px;
+	   padding-right : 200px;
+}
+
+H1  {   font-family : arial, helvetica, sans-serif;
+	font-size : 18;
+	color : #004D48;
+	font-weight : bold;	
+}
+
+/* Heather's general additions: added because Netscape stinks.*/
+
+p, ul, dl, ol, li, dt, dd, td, th, blockquote, div.glossterm, div.abqinputfile, div.seealsosections {
+	font-size : 12pt;
+        font-family : arial, helvetica, sans-serif;
+}
+
+div.glossdef { font-size : 12pt;
+               font-family : arial, helvetica, sans-serif;
+	       padding-left: 30px;	
+}
+
+div.paramlistentry.listitem { font-size : 12pt;
+               font-family : arial, helvetica, sans-serif;
+	       padding-left: 30px;	
+}
+ 
+div.term {font-size : 12pt;
+          font-family : arial, helvetica, sans-serif;
+}
+
+div.variablelist { font-size : 12pt;
+                   font-family : arial, helvetica, sans-serif; 
+}
+
+
+div.extra { font-size : 12pt;
+            font-family : arial, helvetica, sans-serif;	     	
+}
+  	 
+div.indent {   font-size : 12pt;
+               font-family : arial, helvetica, sans-serif;
+	       padding-left: 30px;
+}  
+div.smallindent {   font-size : 12pt;
+               font-family : arial, helvetica, sans-serif;
+	       padding-left: 25px;
+}  
+
+p.indent, li.indent, ul.indent {
+	       font-size : 12pt;
+               font-family : arial, helvetica, sans-serif;
+	       padding-left: 30px;
+}
+  
+div.noindent  {
+	       font-size : 12pt;
+               font-family : arial, helvetica, sans-serif;
+	       padding-left: 0px;
+}  
+
+div.halfindent  {
+	       font-size : 12pt;
+               font-family : arial, helvetica, sans-serif;
+	       padding-left: 15px;
+}  
+ pre {
+   font-size : 12pt; 
+   vertical-align: text-top;
+}
+
+pre b {font-family : arial, helvetica, sans-serif;
+       font-weight: bold;
+}  
+
+div.usage pre.programlisting {font-family : arial, helvetica, sans-serif;
+}
+
+h3.title {font-family : arial, helvetica, sans-serif;
+     color : #004D48;
+     font-weight: bold;
+     font-size : 12pt;
+}
+
+h2.title {font-family : arial, helvetica, sans-serif;
+  	color : #004D48;
+      	font-weight: bold;
+	font-size : 16pt;	
+}
+
+b.abqscrcommand i.replaceable, pre.programlisting i.replaceable, tt.abqscrcommand i.replaceable {font-style: italic; font-weight: normal; font-family : arial, helvetica, sans-serif;
+}
+ 
+div.programlisting div.lineannotation, span.programlisting div.lineannotation, pre.programlisting i.lineannotation {font-style: italic; font-family : arial, helvetica, sans-serif;
+}
+
+div.scrcommandsyntax div.programlisting div.abqscrcommand, span.programlisting b.abqscrcommand, div.scrcommandsyntax div.programlisting div.abqscrdata, span.programlisting b.abqscrdata {font-weight: bold; font-family : arial, helvetica, sans-serif;
+}	
+
+pre.programlisting b.abqscrcommand, pre.programlisting b.abqscrdata {font-weight: normal; font-family : courier, monotype;
+}
+
+div.pyindexterm div.para {font-style:normal;
+}
+
+pre.programlisting span.preusage {font-weight: bold; font-family : Arial, Helvetica, sans-serif; color : #660033; 
+}
+
+div.informaltable {margin: 0; padding:0;
+}
+
+tr.simpletable-entry { vertical-align: top;
+		       }
+td.simpletable-term { padding-right: 0.5cm;
+		      }
+td.simpletable-item { padding-bottom: 0.5cm;
+		       }
+
+
+a img, img {border: 0;
+}
+	
+pre.pysegment i.pyarg {font-weight: normal; font-family : Arial, Helvetica, sans-serif; font-style : italic;
+} 
+div.pyaccessdesc pre i.pyarg {font-weight: normal; font-family : Arial, Helvetica, sans-serif; font-style : italic;
+} 
+
+a.abqexecprocparam {
+border: 0;
+text-decoration: none;
+color : #004D48
+}
+
+a.units a.units:hover a.units:active {text-decoration: none;
+	color : #004D48}
+
+a.units:visited {
+color: #840084; 
+}
+
+a.link:visited {
+color: #840084; 
+}
+
+a.link, a.link:hover, a.link:active {
+color: #004D48;
+}
+
+a.default  {color: black;
+}
+a.unchanged  {color: black;
+}
+a.changed  {color: #004D48;
+}
+a.changed  {color: #00CC00;
+}
+a.removed {color: red;
+}
+a.afcnav {color: #CCCCFF;
+}		
+
+font.nav {font-family: Arial, Helvetica, sans-serif; 
+     font-size :10px;
+     color: #003366;
+}	
+td.nav {
+	font-size : 10px;
+        font-family : arial, helvetica, sans-serif;
+}
+
+BODY.toc  {
+	background : #FFFFFF;
+	color : black;
+        font-size : small;
+	font-family : arial, helvetica, sans-serif;
+	
+}
+
+p.narrow {
+	padding-top : 0px;
+	padding-bottom : 0px;
+	margin-top : 0px;
+	margin-bottom: 0px;
+	}
+
+pre.narrow {
+	padding-top : 0px;
+	padding-bottom : 0px;
+	margin-top : 0px;
+	margin-bottom: 0px;
+	}
+
+a.toc  {text-decoration: none;
+	color : #000066}	
+
+font.toc {font-family: Arial, Helvetica, sans-serif; 
+     font-size :10px;
+     color: #003366;
+}
+
+TABLE.tocctrls {
+	margin-left : 3pt;
+	margin-top : 2pt;
+}
+	
+td.toc {
+	font-family : arial, Helvetica, sans-serif;
+	font-size : smaller;
+	margin-left : 3pt;
+     	color: #003366;
+}
+
+.mmhit { background : #CCCCFF ;
+}
+
+.mmhitC { background : #FF9999 ;
+}
+
+.hitct { font-family: Courier, monospace; color: red; font-size: 8pt;
+}
+
+#Layer2 {
+	position:absolute; 
+	width:100%; 
+	left:3px; 
+	top:3px; 
+	z-index:1; 
+	visibility: visible;
+}
+
+#Layer1 {
+	position:absolute; 
+	width:100%; 
+	left:3px; 
+	top:3px; 
+	z-index:0; 
+	visibility: visible;
+}
+
+TD.waitmsg {font-family: Arial, Helvetica, sans-serif; 
+     font-size :12px;
+     color: #003366;}
+
+
+span.gentxt_blk,div.key,div.record,div.word,div.purpose,div.subindex,div.superindex,div.position,div.title[title=filetable],div.title[title=filesubtable] { 
+	color: #000001; 
+	font-family : arial, helvetica, sans-serif;
+}
+
+span.gentxt_blk_2pt { 
+	color: #000001; 
+	font-family : arial, helvetica, sans-serif;
+	font-size : 2pt;
+	}
+
+span.gentxt_dkgry,div.title[title=recordlist]  {
+	color: #004D48; 
+	font-family : arial, helvetica, sans-serif;
+}
+span.gentxt_red  {
+	color: red; 
+	font-family : arial, helvetica, sans-serif;
+}
+span.gentxt_dkblue  {
+	color: darkblue; 
+	font-family : arial, helvetica, sans-serif;
+}
+
+span.gentxt_brghtgrn {
+	color: #00CC00; 
+	font-family : arial, helvetica, sans-serif;
+}
+span.gentxt_times,mathterm {
+	font-family : serif, times;
+}
+
